@@ -1514,6 +1514,22 @@ final List<IhsanScreenSpec> allScreens = <IhsanScreenSpec>[
       'The product teaches principle before product.',
     ],
   ),
+  spec(
+    id: 70,
+    phase: 'System',
+    category: 'Labs',
+    title: 'Guided Demo Journey',
+    headline: 'A built-in path to verify Ihsan end to end.',
+    summary:
+        'A purpose-built testing and demo feature that walks through the core product journey across prayer, Quran, community, finance, AI, family, and search.',
+    mood: SacredMood.indigo,
+    icon: Icons.route_rounded,
+    tags: <String>['Demo', 'QA', 'Journey'],
+    bullets: <String>[
+      'Tracks end-to-end demo progress inside the app.',
+      'Launches major features from one guided checklist.',
+    ],
+  ),
 ];
 
 IhsanScreenSpec screenById(int id) {

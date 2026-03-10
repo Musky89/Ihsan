@@ -3,25 +3,28 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 FLUTTER_BIN="${FLUTTER_BIN:-$ROOT_DIR/.sdk/flutter/bin/flutter}"
+BASE_URL="${BASE_URL:-http://127.0.0.1:${PORT:-8945}}"
 PORT="${PORT:-8945}"
 DISPLAY_ID="${DISPLAY_ID:-:99}"
 OUT_DIR="$ROOT_DIR/artifacts"
 CLIP_DIR="$OUT_DIR/live-demo-clips"
-VIDEO_FILE="$OUT_DIR/ihsan-live-feature-test.mp4"
+VIDEO_FILE="${VIDEO_FILE:-$OUT_DIR/ihsan-live-feature-test.mp4}"
 LIST_FILE="$OUT_DIR/live-demo-inputs.txt"
 SERVER_LOG="$OUT_DIR/live-http-server.log"
 
 mkdir -p "$CLIP_DIR"
 rm -f "$CLIP_DIR"/*.mp4 "$LIST_FILE" "$VIDEO_FILE"
 
-if [[ ! -d "$ROOT_DIR/build/web" ]]; then
+if [[ "$BASE_URL" == http://127.0.0.1:* ]] && [[ ! -d "$ROOT_DIR/build/web" ]]; then
   "$FLUTTER_BIN" build web --release
 fi
 
 cleanup() {
-  pkill -f "python3 -m http.server $PORT" >/dev/null 2>&1 || true
+  if [[ "$BASE_URL" == http://127.0.0.1:* ]]; then
+    pkill -f "python3 -m http.server $PORT" >/dev/null 2>&1 || true
+  fi
   pkill -f "$DISPLAY_ID" >/dev/null 2>&1 || true
-  pkill -f "google-chrome.*127.0.0.1:$PORT" >/dev/null 2>&1 || true
+  pkill -f "google-chrome.*$BASE_URL" >/dev/null 2>&1 || true
 }
 
 trap cleanup EXIT
@@ -31,12 +34,13 @@ Xvfb "$DISPLAY_ID" -screen 0 430x932x24 >/dev/null 2>&1 &
 XVFB_PID=$!
 export DISPLAY="$DISPLAY_ID"
 
-pushd "$ROOT_DIR/build/web" >/dev/null
-python3 -m http.server "$PORT" >"$SERVER_LOG" 2>&1 &
-SERVER_PID=$!
-popd >/dev/null
-
-sleep 2
+if [[ "$BASE_URL" == http://127.0.0.1:* ]]; then
+  pushd "$ROOT_DIR/build/web" >/dev/null
+  python3 -m http.server "$PORT" >"$SERVER_LOG" 2>&1 &
+  SERVER_PID=$!
+  popd >/dev/null
+  sleep 2
+fi
 
 launch_app() {
   local route="$1"
@@ -47,7 +51,7 @@ launch_app() {
     --no-default-browser-check \
     --window-position=0,0 \
     --window-size=430,932 \
-    --app="http://127.0.0.1:$PORT/$route" >/dev/null 2>&1 &
+    --app="${BASE_URL}/$route" >/dev/null 2>&1 &
   APP_PID=$!
   sleep 5
 }
@@ -55,7 +59,7 @@ launch_app() {
 kill_app() {
   kill "${APP_PID:-}" >/dev/null 2>&1 || true
   pkill -P "${APP_PID:-0}" >/dev/null 2>&1 || true
-  pkill -f "google-chrome.*127.0.0.1:$PORT" >/dev/null 2>&1 || true
+  pkill -f "google-chrome.*$BASE_URL" >/dev/null 2>&1 || true
   sleep 1
 }
 
@@ -122,6 +126,17 @@ record_clip() {
       xdotool type --delay 70 "zakat"
       sleep 2
       ;;
+    demo)
+      xdotool mousemove 388 307 click 1
+      sleep 1
+      xdotool mousemove 142 417 click 1
+      sleep 2
+      xdotool click 5
+      sleep 1
+      xdotool click 4
+      sleep 1
+      xdotool click 5
+      ;;
     atlas)
       xdotool click 5
       sleep 1
@@ -137,6 +152,7 @@ record_clip() {
   kill_app
 }
 
+record_clip "00_demo_journey" "?screen=70" 10 "demo"
 record_clip "01_home" "?tab=0" 6 "home"
 record_clip "02_quran" "?screen=18" 5 "idle"
 record_clip "03_prayer_timeline" "?screen=14" 5 "idle"
@@ -151,6 +167,7 @@ record_clip "11_screen_atlas" "?atlas=1" 7 "atlas"
 
 : >"$LIST_FILE"
 for clip in \
+  "$CLIP_DIR/00_demo_journey.mp4" \
   "$CLIP_DIR/01_home.mp4" \
   "$CLIP_DIR/02_quran.mp4" \
   "$CLIP_DIR/03_prayer_timeline.mp4" \

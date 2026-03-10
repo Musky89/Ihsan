@@ -1045,6 +1045,16 @@ class MoreHubPage extends StatelessWidget {
             SizedBox(
               width: 170,
               child: _ActionTile(
+                title: 'Demo journey',
+                subtitle: 'Run the full guided feature test.',
+                icon: Icons.route_rounded,
+                mood: SacredMood.teal,
+                onTap: () => openScreenPreview(context, screenById(70)),
+              ),
+            ),
+            SizedBox(
+              width: 170,
+              child: _ActionTile(
                 title: 'Tasbeeh',
                 subtitle: 'A meditative digital counter.',
                 icon: Icons.touch_app_rounded,
@@ -2056,6 +2066,220 @@ class FamilyDashboardPage extends StatelessWidget {
   }
 }
 
+class DemoJourneyPage extends StatefulWidget {
+  const DemoJourneyPage({super.key});
+
+  @override
+  State<DemoJourneyPage> createState() => _DemoJourneyPageState();
+}
+
+class _DemoJourneyPageState extends State<DemoJourneyPage> {
+  static const List<(String, String, int)> _steps = <(String, String, int)>[
+    (
+      'Start from Home',
+      'Confirm the contextual dashboard and next-prayer emphasis.',
+      13,
+    ),
+    (
+      'Read Quran',
+      'Open the immersive Quran reader and verify sacred typography.',
+      18,
+    ),
+    (
+      'Review prayer timeline',
+      'Inspect the arc-based prayer visualization and daily flow.',
+      14,
+    ),
+    (
+      'Check community',
+      'Browse the masonry community feed and nearby masjid discovery.',
+      27,
+    ),
+    (
+      'Open zakat flow',
+      'Validate financial inputs and calculation behavior.',
+      43,
+    ),
+    (
+      'Ask the AI scholar',
+      'Test cited conversational guidance with a real prompt.',
+      50,
+    ),
+    (
+      'Enter Ramadan mode',
+      'Verify the transformed seasonal experience and checklist.',
+      53,
+    ),
+    (
+      'Review family dashboard',
+      'Inspect family progress summaries and encouragement patterns.',
+      55,
+    ),
+    (
+      'Run global search',
+      'Search across the ecosystem and confirm result quality.',
+      62,
+    ),
+    (
+      'Open screen atlas',
+      'Verify full inventory access and exploratory coverage.',
+      11,
+    ),
+  ];
+
+  late final List<bool> _completed = List<bool>.filled(_steps.length, false);
+
+  @override
+  Widget build(BuildContext context) {
+    final int completedCount = _completed.where((bool value) => value).length;
+    final double progress = completedCount / _steps.length;
+
+    return AtmosphericPage(
+      mood: SacredMood.indigo,
+      title: 'Guided demo journey',
+      subtitle:
+          'A built-in test run that walks through Ihsan\'s core product story from devotion to daily living.',
+      children: <Widget>[
+        GlassPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const _SectionEyebrow('Demo progress'),
+              const SizedBox(height: 14),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          '$completedCount of ${_steps.length} checks complete',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Use this journey to verify the core feature sweep before release or during demos.',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  SizedBox(
+                    width: 86,
+                    height: 86,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                          value: progress,
+                          strokeWidth: 9,
+                          color: SacredColors.gold,
+                          backgroundColor: Colors.white.withValues(alpha: 0.08),
+                        ),
+                        Text('${(progress * 100).round()}%'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
+        ..._steps.indexed.map(((int, (String, String, int)) entry) {
+          final int index = entry.$1;
+          final (String, String, int) item = entry.$2;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: GlassPanel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        backgroundColor: _completed[index]
+                            ? SacredColors.gold.withValues(alpha: 0.22)
+                            : Colors.white.withValues(alpha: 0.08),
+                        child: Icon(
+                          _completed[index]
+                              ? Icons.check_rounded
+                              : Icons.play_arrow_rounded,
+                          color: _completed[index]
+                              ? SacredColors.gold
+                              : SacredColors.moonlight,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          item.$1,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                      Switch(
+                        value: _completed[index],
+                        activeThumbColor: SacredColors.gold,
+                        onChanged: (bool value) {
+                          setState(() => _completed[index] = value);
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    item.$2,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: SacredColors.muted),
+                  ),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: <Widget>[
+                      FilledButton(
+                        onPressed: () {
+                          if (item.$1 == 'Open screen atlas') {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => const ScreenAtlasPage(),
+                              ),
+                            );
+                            return;
+                          }
+                          openScreenPreview(context, screenById(item.$3));
+                        },
+                        style: FilledButton.styleFrom(
+                          backgroundColor: SacredColors.gold,
+                          foregroundColor: SacredColors.obsidian,
+                        ),
+                        child: const Text('Open step'),
+                      ),
+                      const SizedBox(width: 12),
+                      TextButton(
+                        onPressed: () {
+                          setState(
+                            () => _completed[index] = !_completed[index],
+                          );
+                        },
+                        child: Text(
+                          _completed[index]
+                              ? 'Mark incomplete'
+                              : 'Mark complete',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
 class NotificationCenterPage extends StatelessWidget {
   const NotificationCenterPage({super.key});
 
@@ -2938,6 +3162,8 @@ Widget buildScreenExperience(IhsanScreenSpec spec) {
       return const UniversalSearchPage();
     case 64:
       return const AccessibilitySettingsPage();
+    case 70:
+      return const DemoJourneyPage();
     default:
       return GenericExperiencePage(spec: spec);
   }
