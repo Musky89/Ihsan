@@ -36,6 +36,10 @@ migrate_working_dir/
 /.android-sdk/
 /artifacts/http-server.log
 /artifacts/video-inputs.txt
+/artifacts/live-http-server.log
+/artifacts/live-demo-inputs.txt
+/artifacts/live-demo-clips/
+/artifacts/video-stills/
 /artifacts/releases/
 
 # Symbolication related
