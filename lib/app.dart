@@ -12,6 +12,45 @@ import 'theme.dart';
 
 enum AppStage { splash, onboarding, shell }
 
+class LaunchRequest {
+  const LaunchRequest({
+    this.screenId,
+    this.tabIndex,
+    this.stage,
+    this.showAtlas = false,
+  });
+
+  final int? screenId;
+  final int? tabIndex;
+  final AppStage? stage;
+  final bool showAtlas;
+
+  static LaunchRequest fromUri(Uri uri) {
+    final Map<String, String> params = uri.queryParameters;
+    final int? screenId = int.tryParse(params['screen'] ?? '');
+    final int? tabIndex = int.tryParse(params['tab'] ?? '');
+    final bool showAtlas = params['atlas'] == '1';
+    final String? stageValue = params['stage'];
+
+    AppStage? stage;
+    if (stageValue != null) {
+      for (final AppStage item in AppStage.values) {
+        if (item.name == stageValue) {
+          stage = item;
+          break;
+        }
+      }
+    }
+
+    return LaunchRequest(
+      screenId: screenId,
+      tabIndex: tabIndex,
+      stage: stage,
+      showAtlas: showAtlas,
+    );
+  }
+}
+
 final appStageProvider = NotifierProvider<AppStageNotifier, AppStage>(
   AppStageNotifier.new,
 );
@@ -127,12 +166,44 @@ class IhsanApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final LaunchRequest launchRequest = LaunchRequest.fromUri(Uri.base);
     return MaterialApp(
       title: 'Ihsan',
       debugShowCheckedModeBanner: false,
       theme: buildSacredTheme(),
-      home: const AppFlowHost(),
+      home: AppEntry(launchRequest: launchRequest),
     );
+  }
+}
+
+class AppEntry extends StatelessWidget {
+  const AppEntry({super.key, required this.launchRequest});
+
+  final LaunchRequest launchRequest;
+
+  @override
+  Widget build(BuildContext context) {
+    if (launchRequest.showAtlas) {
+      return const ScreenAtlasPage();
+    }
+    if (launchRequest.screenId case final int screenId) {
+      return buildScreenExperience(screenById(screenId));
+    }
+    if (launchRequest.tabIndex case final int tabIndex) {
+      return AppShell(initialTab: tabIndex);
+    }
+    if (launchRequest.stage case final AppStage stage) {
+      switch (stage) {
+        case AppStage.splash:
+          return const SplashExperience();
+        case AppStage.onboarding:
+          return const OnboardingExperience();
+        case AppStage.shell:
+          return const AppShell();
+      }
+    }
+
+    return const AppFlowHost();
   }
 }
 
@@ -447,11 +518,26 @@ class _OnboardingExperienceState extends ConsumerState<OnboardingExperience> {
   }
 }
 
-class AppShell extends ConsumerWidget {
-  const AppShell({super.key});
+class AppShell extends ConsumerStatefulWidget {
+  const AppShell({super.key, this.initialTab = 0});
+
+  final int initialTab;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends ConsumerState<AppShell> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(shellTabProvider.notifier).setIndex(widget.initialTab);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final int index = ref.watch(shellTabProvider);
     final List<Widget> pages = <Widget>[
       const HomeDashboardPage(),
@@ -2821,40 +2907,40 @@ class _SliderRow extends StatelessWidget {
 }
 
 void openScreenPreview(BuildContext context, IhsanScreenSpec spec) {
-  Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) {
-        switch (spec.id) {
-          case 14:
-            return const PrayerTimesExperiencePage();
-          case 18:
-            return const QuranReaderExperiencePage();
-          case 25:
-            return const TasbeehExperiencePage();
-          case 26:
-            return const NotificationCenterPage();
-          case 27:
-            return const CommunityFeedExperiencePage();
-          case 29:
-            return const MasjidMapExperiencePage();
-          case 43:
-            return const ZakatCalculatorPage();
-          case 50:
-            return const AiScholarPage();
-          case 53:
-            return const RamadanModePage();
-          case 55:
-            return const FamilyDashboardPage();
-          case 62:
-            return const UniversalSearchPage();
-          case 64:
-            return const AccessibilitySettingsPage();
-          default:
-            return GenericExperiencePage(spec: spec);
-        }
-      },
-    ),
-  );
+  Navigator.of(
+    context,
+  ).push(MaterialPageRoute<void>(builder: (_) => buildScreenExperience(spec)));
+}
+
+Widget buildScreenExperience(IhsanScreenSpec spec) {
+  switch (spec.id) {
+    case 14:
+      return const PrayerTimesExperiencePage();
+    case 18:
+      return const QuranReaderExperiencePage();
+    case 25:
+      return const TasbeehExperiencePage();
+    case 26:
+      return const NotificationCenterPage();
+    case 27:
+      return const CommunityFeedExperiencePage();
+    case 29:
+      return const MasjidMapExperiencePage();
+    case 43:
+      return const ZakatCalculatorPage();
+    case 50:
+      return const AiScholarPage();
+    case 53:
+      return const RamadanModePage();
+    case 55:
+      return const FamilyDashboardPage();
+    case 62:
+      return const UniversalSearchPage();
+    case 64:
+      return const AccessibilitySettingsPage();
+    default:
+      return GenericExperiencePage(spec: spec);
+  }
 }
 
 double calculateZakat({

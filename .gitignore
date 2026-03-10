@@ -33,6 +33,10 @@ migrate_working_dir/
 /build/
 /coverage/
 /.sdk/
+/.android-sdk/
+/artifacts/http-server.log
+/artifacts/video-inputs.txt
+/artifacts/releases/
 
 # Symbolication related
 app.*.symbols

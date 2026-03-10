@@ -51,6 +51,31 @@ flutter analyze
 flutter test
 ```
 
+## Media capture
+
+```bash
+./tool/capture_media.sh
+```
+
+Generated artifacts:
+
+- screenshots: `artifacts/screenshots/`
+- walkthrough video: `artifacts/ihsan-feature-walkthrough.mp4`
+
+## Release packaging
+
+```bash
+./tool/build_release.sh
+```
+
+Release outputs are written to:
+
+- `artifacts/releases/web`
+- `artifacts/releases/app-release.apk` when Android SDK/signing are available
+- `artifacts/releases/app-release.aab` when Android SDK/signing are available
+
+See `docs/production-deployment.md` for the remaining external requirements for real store deployment.
+
 ## Notes
 
 - This codebase is a high-fidelity front-end prototype derived from the concept document.
