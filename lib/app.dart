@@ -5,7 +5,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 import 'data.dart';
 import 'theme.dart';
@@ -578,7 +577,7 @@ class HomeDashboardPage extends StatelessWidget {
       mood: SacredMood.indigo,
       title: 'Asr in 2h 34m',
       subtitle:
-          '${DateFormat('EEEE, d MMMM').format(DateTime.now())} · 10 Ramadan 1447',
+          'A living home screen shaped by the rhythm of salah, Quran, and what matters right now.',
       actions: <Widget>[
         _HeaderAction(
           icon: Icons.search_rounded,
@@ -591,6 +590,69 @@ class HomeDashboardPage extends StatelessWidget {
       ],
       children: <Widget>[
         GlassPanel(
+          padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: const <Widget>[
+                  _StatusCapsule(
+                    icon: Icons.location_on_outlined,
+                    label: 'London · Hanafi',
+                  ),
+                  _StatusCapsule(
+                    icon: Icons.calendar_today_outlined,
+                    label: '10 Ramadan 1447',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 22),
+              Text(
+                'ASR',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: SacredColors.gold,
+                  letterSpacing: 3,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '2h 34m',
+                style: Theme.of(
+                  context,
+                ).textTheme.displayLarge?.copyWith(fontSize: 66),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Tuesday, 10 March · Prayer transition in warm amber.',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 22),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: _MetricCapsule(
+                      title: 'Qibla',
+                      value: '245° SW',
+                      accent: SacredColors.gold,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _MetricCapsule(
+                      title: 'Streak',
+                      value: '7 days',
+                      accent: SacredColors.rose,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
+        GlassPanel(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -598,9 +660,9 @@ class HomeDashboardPage extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 'Indeed, prayer has been decreed upon the believers a decree of specified times.',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               Text(
                 'Quran 4:103',
                 style: Theme.of(
@@ -619,12 +681,10 @@ class HomeDashboardPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        Wrap(
-          spacing: 14,
-          runSpacing: 14,
+        Row(
           children: <Widget>[
-            SizedBox(
-              width: 220,
+            Expanded(
+              flex: 6,
               child: _ActionTile(
                 title: 'Prayer arc timeline',
                 subtitle: 'Track the day as a luminous curve.',
@@ -633,8 +693,9 @@ class HomeDashboardPage extends StatelessWidget {
                 onTap: () => openScreenPreview(context, screenById(14)),
               ),
             ),
-            SizedBox(
-              width: 160,
+            const SizedBox(width: 14),
+            Expanded(
+              flex: 4,
               child: _ActionTile(
                 title: 'Continue Al-Kahf',
                 subtitle: 'Ayah 28',
@@ -643,8 +704,13 @@ class HomeDashboardPage extends StatelessWidget {
                 onTap: () => openScreenPreview(context, screenById(18)),
               ),
             ),
-            SizedBox(
-              width: 160,
+          ],
+        ),
+        const SizedBox(height: 14),
+        Row(
+          children: <Widget>[
+            Expanded(
+              flex: 4,
               child: _ActionTile(
                 title: 'Morning adhkar',
                 subtitle: '12 duas',
@@ -653,8 +719,9 @@ class HomeDashboardPage extends StatelessWidget {
                 onTap: () => openScreenPreview(context, screenById(21)),
               ),
             ),
-            SizedBox(
-              width: 220,
+            const SizedBox(width: 14),
+            Expanded(
+              flex: 6,
               child: _ActionTile(
                 title: 'Ramadan mode',
                 subtitle: 'Checklist, khatm tracker, fasting ring.',
@@ -677,14 +744,25 @@ class HomeDashboardPage extends StatelessWidget {
             children: prayerSchedule
                 .map(
                   (PrayerWindow prayer) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Row(
                       children: <Widget>[
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundColor: sacredAccent(
-                            prayer.mood,
-                          ).withValues(alpha: 0.18),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: <Color>[
+                                sacredAccent(
+                                  prayer.mood,
+                                ).withValues(alpha: 0.28),
+                                sacredAccent(
+                                  prayer.mood,
+                                ).withValues(alpha: 0.08),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                           child: Icon(
                             Icons.circle,
                             size: 10,
@@ -698,7 +776,10 @@ class HomeDashboardPage extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
-                        Text(prayer.time),
+                        Text(
+                          prayer.time,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         const SizedBox(width: 10),
                         Text(
                           prayer.remaining,
@@ -738,7 +819,7 @@ class QuranHubPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const _SectionEyebrow('Resume'),
+              const _SectionEyebrow('Immersive reader'),
               const SizedBox(height: 10),
               Text(
                 'Surah Al-Kahf',
@@ -749,10 +830,18 @@ class QuranHubPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Read with Amiri Quran typography, gold verse markers, and hidden controls.',
+                'Read with Amiri Quran typography, gold verse markers, and the quiet dignity of warm parchment.',
                 style: Theme.of(
                   context,
                 ).textTheme.bodyLarge?.copyWith(color: SacredColors.deepEarth),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+                style: GoogleFonts.amiriQuran(
+                  fontSize: 28,
+                  color: SacredColors.deepEarth,
+                ),
               ),
               const SizedBox(height: 18),
               FilledButton(
@@ -842,7 +931,7 @@ class PrayerHubPage extends StatelessWidget {
           onTap: () => openScreenPreview(context, screenById(14)),
           child: GlassPanel(
             child: SizedBox(
-              height: 240,
+              height: 280,
               child: CustomPaint(
                 painter: PrayerArcPainter(prayerSchedule: prayerSchedule),
                 child: Center(
@@ -853,11 +942,16 @@ class PrayerHubPage extends StatelessWidget {
                         'Asr',
                         style: Theme.of(
                           context,
-                        ).textTheme.displaySmall?.copyWith(fontSize: 38),
+                        ).textTheme.displayMedium?.copyWith(fontSize: 42),
                       ),
                       Text(
                         'In 2h 34m',
                         style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 12),
+                      const _StatusCapsule(
+                        icon: Icons.notifications_active_outlined,
+                        label: 'Adhan + dua details',
                       ),
                     ],
                   ),
@@ -945,7 +1039,7 @@ class CommunityHubPage extends StatelessWidget {
                   const SizedBox(height: 14),
                   Text(
                     post.title,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   const SizedBox(height: 8),
                   Text(post.body),
@@ -1065,6 +1159,25 @@ class MoreHubPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 18),
+        GlassPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const _SectionEyebrow('Quality gate'),
+              const SizedBox(height: 12),
+              Text(
+                'Use Demo Journey to test the product story from spiritual essentials to AI and family features.',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'This is the built-in QA flow for demos, handoff, and release reviews.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
         _SectionHeader(
           title: 'Commerce & services',
           actionLabel: 'View directories',
@@ -1107,6 +1220,9 @@ class AtmosphericPage extends StatelessWidget {
     final Color foreground = dark
         ? SacredColors.moonlight
         : SacredColors.obsidian;
+    final Color subForeground = dark
+        ? SacredColors.moonlightSoft
+        : SacredColors.deepEarth;
     return DecoratedBox(
       decoration: BoxDecoration(gradient: sacredGradient(mood)),
       child: Stack(
@@ -1114,38 +1230,90 @@ class AtmosphericPage extends StatelessWidget {
         children: <Widget>[
           _AtmosphereOverlay(mood: mood),
           SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 14, 20, 120),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+                  child: Row(
                     children: <Widget>[
                       const BloomStar(size: 34),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Sacred Night',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          letterSpacing: 1.2,
+                          color: SacredColors.gold,
+                        ),
+                      ),
                       const Spacer(),
                       ...actions,
                     ],
                   ),
-                  const SizedBox(height: 26),
-                  Text(
-                    title,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.displayMedium?.copyWith(color: foreground),
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: dark
-                          ? SacredColors.moonlight
-                          : SacredColors.deepEarth,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 120),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 24, 20, 34),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              _HeroMoodTag(mood: mood),
+                              const SizedBox(height: 16),
+                              Text(
+                                title,
+                                style: Theme.of(context).textTheme.displayMedium
+                                    ?.copyWith(color: foreground),
+                              ),
+                              const SizedBox(height: 14),
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 360,
+                                ),
+                                child: Text(
+                                  subtitle,
+                                  style: Theme.of(context).textTheme.bodyLarge
+                                      ?.copyWith(color: subForeground),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: sacredPanelGradient(mood: mood),
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(36),
+                            ),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.06),
+                            ),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: SacredColors.shadow.withValues(
+                                  alpha: 0.42,
+                                ),
+                                blurRadius: 44,
+                                offset: const Offset(0, -14),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: children,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 26),
-                  ...children,
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
@@ -2471,23 +2639,42 @@ class GlassPanel extends StatelessWidget {
     final Color fill =
         tint ??
         (invert
-            ? Colors.white.withValues(alpha: 0.72)
-            : Colors.white.withValues(alpha: 0.08));
+            ? Colors.white.withValues(alpha: 0.84)
+            : SacredColors.panel.withValues(alpha: 0.86));
     final Color border = invert
-        ? Colors.black.withValues(alpha: 0.06)
-        : Colors.white.withValues(alpha: 0.1);
+        ? Colors.black.withValues(alpha: 0.05)
+        : Colors.white.withValues(alpha: 0.07);
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(28),
+      borderRadius: BorderRadius.circular(30),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
         child: Container(
           width: width,
           padding: padding,
           decoration: BoxDecoration(
-            color: fill,
-            borderRadius: BorderRadius.circular(28),
+            gradient: invert
+                ? sacredPanelGradient(mood: SacredMood.parchment, invert: true)
+                : LinearGradient(
+                    colors: <Color>[
+                      fill,
+                      fill.withValues(alpha: 0.92),
+                      SacredColors.indigo.withValues(alpha: 0.16),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+            borderRadius: BorderRadius.circular(30),
             border: Border.all(color: border),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: SacredColors.shadow.withValues(
+                  alpha: invert ? 0.10 : 0.32,
+                ),
+                blurRadius: 24,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
           child: child,
         ),
@@ -2635,7 +2822,7 @@ class _FloatingNavBar extends StatelessWidget {
     ];
 
     return GlassPanel(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List<Widget>.generate(items.length, (int index) {
@@ -2643,18 +2830,39 @@ class _FloatingNavBar extends StatelessWidget {
           final (IconData icon, String label) = items[index];
           return Expanded(
             child: InkWell(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(24),
               onTap: () => onSelected(index),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(22),
+                  gradient: active
+                      ? LinearGradient(
+                          colors: <Color>[
+                            SacredColors.gold.withValues(alpha: 0.20),
+                            SacredColors.gold.withValues(alpha: 0.06),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        )
+                      : null,
+                  border: active
+                      ? Border.all(
+                          color: SacredColors.gold.withValues(alpha: 0.22),
+                        )
+                      : null,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Icon(
                       icon,
+                      size: active ? 22 : 20,
                       color: active ? SacredColors.gold : SacredColors.muted,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     Text(
                       label,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -2691,12 +2899,26 @@ class _HeaderAction extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(999),
         child: Container(
-          width: 44,
-          height: 44,
+          width: 46,
+          height: 46,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.08),
+            gradient: LinearGradient(
+              colors: <Color>[
+                Colors.white.withValues(alpha: 0.10),
+                SacredColors.panel.withValues(alpha: 0.84),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: SacredColors.shadow.withValues(alpha: 0.30),
+                blurRadius: 14,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
           child: Icon(icon, color: foregroundColor, size: 20),
         ),
@@ -2735,23 +2957,39 @@ class _ActionTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: sacredAccent(
-                  mood,
-                ).withValues(alpha: invert ? 0.18 : 0.22),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icon, color: sacredAccent(mood)),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: <Color>[
+                        sacredAccent(mood).withValues(alpha: 0.32),
+                        sacredAccent(mood).withValues(alpha: 0.10),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(icon, color: sacredAccent(mood)),
+                ),
+                const Spacer(),
+                Icon(
+                  Icons.north_east_rounded,
+                  size: 18,
+                  color: invert ? SacredColors.deepEarth : SacredColors.gold,
+                ),
+              ],
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 18),
             Text(
               title,
               style: Theme.of(
                 context,
-              ).textTheme.titleMedium?.copyWith(color: textColor),
+              ).textTheme.titleLarge?.copyWith(color: textColor, fontSize: 21),
             ),
             const SizedBox(height: 8),
             Text(
@@ -2788,11 +3026,18 @@ class _ContentListTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              width: 48,
-              height: 48,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 gradient: sacredGradient(card.mood),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: sacredAccent(card.mood).withValues(alpha: 0.22),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
               child: Icon(card.icon, color: readableForeground(card.mood)),
             ),
@@ -2803,9 +3048,10 @@ class _ContentListTile extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     card.title,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium?.copyWith(color: titleColor),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: titleColor,
+                      fontSize: 17,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -2851,15 +3097,136 @@ class _TagChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.08),
+        gradient: LinearGradient(
+          colors: <Color>[
+            SacredColors.panelRaised.withValues(alpha: 0.92),
+            SacredColors.panel.withValues(alpha: 0.90),
+          ],
+        ),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
       ),
       child: Text(
         label,
         style: Theme.of(
           context,
         ).textTheme.bodySmall?.copyWith(color: SacredColors.moonlight),
+      ),
+    );
+  }
+}
+
+class _HeroMoodTag extends StatelessWidget {
+  const _HeroMoodTag({required this.mood});
+
+  final SacredMood mood;
+
+  @override
+  Widget build(BuildContext context) {
+    final String label = switch (mood) {
+      SacredMood.indigo => 'Night prayer atmosphere',
+      SacredMood.parchment => 'Parchment reading mode',
+      SacredMood.gold => 'Dhuhr / Asr warmth',
+      SacredMood.rose => 'Fajr / Maghrib glow',
+      SacredMood.obsidian => 'Dark-first sacred mode',
+      SacredMood.teal => 'Interactive utility mode',
+      SacredMood.ramadan => 'Ramadan transformation',
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(Icons.auto_awesome_rounded, size: 14, color: SacredColors.gold),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: SacredColors.moonlight,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusCapsule extends StatelessWidget {
+  const _StatusCapsule({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(icon, size: 15, color: SacredColors.gold),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: SacredColors.moonlight),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricCapsule extends StatelessWidget {
+  const _MetricCapsule({
+    required this.title,
+    required this.value,
+    required this.accent,
+  });
+
+  final String title;
+  final String value;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title.toUpperCase(),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: accent, letterSpacing: 1.1),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: SacredColors.moonlight),
+          ),
+        ],
       ),
     );
   }
@@ -2890,10 +3257,14 @@ class _SectionHeader extends StatelessWidget {
             title,
             style: Theme.of(
               context,
-            ).textTheme.titleLarge?.copyWith(color: textColor),
+            ).textTheme.titleLarge?.copyWith(color: textColor, fontSize: 28),
           ),
         ),
-        TextButton(onPressed: onTap, child: Text(actionLabel)),
+        TextButton.icon(
+          onPressed: onTap,
+          icon: const Icon(Icons.north_east_rounded, size: 16),
+          label: Text(actionLabel),
+        ),
       ],
     );
   }
@@ -2926,6 +3297,21 @@ class _AtmosphereOverlay extends StatelessWidget {
     return IgnorePointer(
       child: Stack(
         children: <Widget>[
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    Colors.black.withValues(alpha: 0.05),
+                    Colors.transparent,
+                    SacredColors.gold.withValues(alpha: 0.05),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ),
           Positioned(
             top: -120,
             right: -80,
@@ -2960,8 +3346,47 @@ class _AtmosphereOverlay extends StatelessWidget {
               ),
             ),
           ),
+          const Positioned.fill(child: _StarField()),
         ],
       ),
+    );
+  }
+}
+
+class _StarField extends StatelessWidget {
+  const _StarField();
+
+  @override
+  Widget build(BuildContext context) {
+    final List<(double, double, double)> points = <(double, double, double)>[
+      (0.18, 0.10, 3),
+      (0.62, 0.14, 2),
+      (0.78, 0.22, 2),
+      (0.12, 0.28, 2),
+      (0.86, 0.35, 3),
+      (0.22, 0.46, 2),
+      (0.72, 0.58, 2),
+      (0.44, 0.20, 2),
+    ];
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Stack(
+          children: points.map(((double, double, double) point) {
+            return Positioned(
+              left: constraints.maxWidth * point.$1,
+              top: constraints.maxHeight * point.$2,
+              child: Container(
+                width: point.$3,
+                height: point.$3,
+                decoration: BoxDecoration(
+                  color: SacredColors.moonlight.withValues(alpha: 0.50),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 }

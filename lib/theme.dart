@@ -6,13 +6,18 @@ enum SacredMood { indigo, parchment, gold, rose, obsidian, teal, ramadan }
 class SacredColors {
   static const Color indigo = Color(0xFF1B1464);
   static const Color moonlight = Color(0xFFF0EDE5);
+  static const Color moonlightSoft = Color(0xFFD9D5CC);
   static const Color gold = Color(0xFFD4A843);
   static const Color rose = Color(0xFFC4737B);
   static const Color teal = Color(0xFF0A6E6E);
   static const Color deepEarth = Color(0xFF3D2B1F);
   static const Color obsidian = Color(0xFF0A0A14);
+  static const Color obsidianSoft = Color(0xFF141425);
+  static const Color panel = Color(0xFF1A1B34);
+  static const Color panelRaised = Color(0xFF222448);
   static const Color muted = Color(0xFF6B6B8D);
   static const Color success = Color(0xFF7EBB7C);
+  static const Color shadow = Color(0xFF05050B);
 }
 
 ThemeData buildSacredTheme() {
@@ -30,7 +35,7 @@ ThemeData buildSacredTheme() {
       );
 
   final baseText =
-      GoogleFonts.plusJakartaSansTextTheme(
+      GoogleFonts.manropeTextTheme(
         ThemeData(brightness: Brightness.dark).textTheme,
       ).apply(
         bodyColor: SacredColors.moonlight,
@@ -44,53 +49,53 @@ ThemeData buildSacredTheme() {
     scaffoldBackgroundColor: SacredColors.obsidian,
     textTheme: baseText.copyWith(
       displayLarge: GoogleFonts.fraunces(
-        fontSize: 44,
+        fontSize: 52,
         fontWeight: FontWeight.w700,
         color: SacredColors.moonlight,
-        height: 0.96,
+        height: 0.92,
       ),
       displayMedium: GoogleFonts.fraunces(
-        fontSize: 34,
+        fontSize: 40,
         fontWeight: FontWeight.w700,
         color: SacredColors.moonlight,
-        height: 1.0,
+        height: 0.94,
       ),
       headlineLarge: GoogleFonts.fraunces(
-        fontSize: 28,
+        fontSize: 30,
         fontWeight: FontWeight.w700,
         color: SacredColors.moonlight,
       ),
       titleLarge: GoogleFonts.fraunces(
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: FontWeight.w600,
         color: SacredColors.moonlight,
       ),
-      titleMedium: GoogleFonts.plusJakartaSans(
+      titleMedium: GoogleFonts.manrope(
         fontSize: 16,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w800,
         color: SacredColors.moonlight,
       ),
-      bodyLarge: GoogleFonts.plusJakartaSans(
+      bodyLarge: GoogleFonts.manrope(
         fontSize: 16,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         color: SacredColors.moonlight,
-        height: 1.4,
+        height: 1.5,
       ),
-      bodyMedium: GoogleFonts.plusJakartaSans(
+      bodyMedium: GoogleFonts.manrope(
         fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: SacredColors.moonlight,
+        fontWeight: FontWeight.w600,
+        color: SacredColors.moonlightSoft,
         height: 1.45,
       ),
-      bodySmall: GoogleFonts.plusJakartaSans(
+      bodySmall: GoogleFonts.manrope(
         fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: SacredColors.muted,
-        height: 1.4,
-      ),
-      labelLarge: GoogleFonts.plusJakartaSans(
-        fontSize: 14,
         fontWeight: FontWeight.w700,
+        color: SacredColors.muted,
+        height: 1.35,
+      ),
+      labelLarge: GoogleFonts.manrope(
+        fontSize: 14,
+        fontWeight: FontWeight.w800,
         color: SacredColors.obsidian,
       ),
     ),
@@ -107,19 +112,19 @@ ThemeData buildSacredTheme() {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Colors.white.withValues(alpha: 0.06),
-      hintStyle: GoogleFonts.plusJakartaSans(
+      fillColor: SacredColors.panel.withValues(alpha: 0.88),
+      hintStyle: GoogleFonts.manrope(
         color: SacredColors.muted,
         fontSize: 14,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(24),
-        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(24),
-        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(24),
@@ -128,7 +133,7 @@ ThemeData buildSacredTheme() {
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
     ),
     cardTheme: CardThemeData(
-      color: Colors.white.withValues(alpha: 0.06),
+      color: SacredColors.panel.withValues(alpha: 0.9),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(28),
@@ -137,11 +142,11 @@ ThemeData buildSacredTheme() {
       margin: EdgeInsets.zero,
     ),
     chipTheme: ChipThemeData(
-      backgroundColor: Colors.white.withValues(alpha: 0.07),
+      backgroundColor: SacredColors.panelRaised.withValues(alpha: 0.9),
       selectedColor: SacredColors.gold,
-      labelStyle: GoogleFonts.plusJakartaSans(
+      labelStyle: GoogleFonts.manrope(
         color: SacredColors.moonlight,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(999),
@@ -186,13 +191,86 @@ LinearGradient sacredGradient(SacredMood mood) {
       );
     case SacredMood.obsidian:
       return const LinearGradient(
-        colors: [Color(0xFF0A0A14), Color(0xFF14152A), Color(0xFF1B1464)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
+        colors: [Color(0xFF090911), Color(0xFF111228), Color(0xFF1A164A)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
       );
     case SacredMood.indigo:
       return const LinearGradient(
-        colors: [Color(0xFF1B1464), Color(0xFF11173C), Color(0xFF0A0A14)],
+        colors: [Color(0xFF20146A), Color(0xFF121A48), Color(0xFF090911)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
+  }
+}
+
+LinearGradient sacredPanelGradient({
+  required SacredMood mood,
+  bool invert = false,
+}) {
+  if (invert) {
+    return const LinearGradient(
+      colors: <Color>[Color(0xFFF5F1E8), Color(0xFFE6DCC9)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+  }
+
+  switch (mood) {
+    case SacredMood.gold:
+      return LinearGradient(
+        colors: <Color>[
+          SacredColors.panelRaised,
+          SacredColors.panel,
+          SacredColors.deepEarth.withValues(alpha: 0.95),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    case SacredMood.parchment:
+      return const LinearGradient(
+        colors: <Color>[Color(0xFFF3EEE3), Color(0xFFE6D8C2)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    case SacredMood.ramadan:
+      return LinearGradient(
+        colors: <Color>[
+          const Color(0xFF6A4375),
+          SacredColors.panel,
+          SacredColors.gold.withValues(alpha: 0.28),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    case SacredMood.rose:
+      return LinearGradient(
+        colors: <Color>[
+          const Color(0xFF372347),
+          SacredColors.panelRaised,
+          SacredColors.rose.withValues(alpha: 0.20),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    case SacredMood.teal:
+      return LinearGradient(
+        colors: <Color>[
+          const Color(0xFF112B32),
+          SacredColors.panel,
+          SacredColors.teal.withValues(alpha: 0.22),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    case SacredMood.obsidian:
+    case SacredMood.indigo:
+      return LinearGradient(
+        colors: <Color>[
+          SacredColors.panelRaised,
+          SacredColors.panel,
+          SacredColors.indigo.withValues(alpha: 0.18),
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
